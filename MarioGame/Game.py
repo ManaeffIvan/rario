@@ -291,7 +291,7 @@ class Player(pygame.sprite.Sprite):
                             if self.rect.y > pygame.sprite.spritecollideany(self, enemies_group).rect.y - 5 and self.rect.y - pygame.sprite.spritecollideany(self, enemies_group).rect.y < tile_height - 7:
                                 self.cur_anim = 'die'
                                 self.ghost = True
-                                self.speed_x = 1 * abs(self.speed_x) / max(self.speed_x, 1)
+                                self.speed_x = 0
                                 self.speed_y = -JUMPHEIHT * 0.5
                                 if self.acceleration_x < 0:
                                     self.cur_frame = 1
@@ -307,7 +307,7 @@ class Player(pygame.sprite.Sprite):
                             if self.rect.x > pygame.sprite.spritecollideany(self, enemies_group).rect.x:
                                 self.cur_anim = 'die'
                                 self.ghost = True
-                                self.speed_x = 1 * abs(self.speed_x) / max(self.speed_x, 1)
+                                self.speed_x = 0
                                 self.speed_y = -JUMPHEIHT * 0.5
                                 if self.acceleration_x < 0:
                                     self.cur_frame = 1
@@ -324,7 +324,7 @@ class Player(pygame.sprite.Sprite):
                             if self.rect.y > pygame.sprite.spritecollideany(self, enemies_group).rect.y - 5 and self.rect.y - pygame.sprite.spritecollideany(self, enemies_group).rect.y < tile_height - 7:
                                 self.cur_anim = 'die'
                                 self.ghost = True
-                                self.speed_x = 1 * abs(self.speed_x) / max(self.speed_x, 1)
+                                self.speed_x = 0
                                 self.speed_y = -JUMPHEIHT * 0.5
                                 if self.acceleration_x < 0:
                                     self.cur_frame = 1
@@ -381,6 +381,7 @@ class Player(pygame.sprite.Sprite):
             if pygame.sprite.spritecollideany(self, boost_group):
                 boost_group.remove_internal(pygame.sprite.spritecollideany(self, boost_group))
                 self.mode = 'god'
+                self.points += 200
                 self.timer = 30000
 
 
@@ -740,12 +741,13 @@ while running1:
 
                 clock.tick(FPS)
                 game_time -= FPS
+                game_time = max(0, game_time)
                 time += FPS
                 if time >= 185000:
                     pygame.mixer.music.play()
                     time = 0
 
-                if player.ghost and not fl:
+                if player.ghost and not fl or game_time <= 0:
                     fl = True
                     fullname = os.path.join('data', 'mario-die.mp3')
                     pygame.mixer.music.load(fullname)
